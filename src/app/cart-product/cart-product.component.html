@@ -1,5 +1,8 @@
 <section class="container">
   <ul class="products">
+    <div *ngIf="!products.length">
+      <button type="button" (click)="seed()">Shopping Now</button>
+    </div>
     <li class="row" *ngFor="let product of products">
       <div class="col left">
         <div class="thumbnail">
@@ -18,7 +21,7 @@
 
       <div class="col right">
         <div class="quantity">
-          <input type="number" class="quantity" step="1" [value]="product.quantity" (change)="updateProductQuantity(product.id, $event.target.value)"/>
+          <input type="number" class="quantity" required min=1 step="1" [value]="product.quantity" (input)="updateProductQuantity(product.id, $event)"/>
         </div>
 
         <div class="remove">

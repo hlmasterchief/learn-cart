@@ -1,4 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CartService } from '../cart.service';
 import { Product } from '../product.model';
 
 @Component({
@@ -7,16 +8,13 @@ import { Product } from '../product.model';
   styleUrls: ['./cart-product.component.css']
 })
 export class CartProductComponent implements OnInit {
-  @Input() products: Product[];
-  @Output() update = new EventEmitter();
+  products: Product[];
 
-  constructor() { }
-
-  ngOnInit(): void {
+  constructor(private cartService: CartService) {
+    this.products = this.cartService.products;
   }
 
-  updateProduct(): void {
-    this.update.emit();
+  ngOnInit(): void {
   }
 
   removeProduct(id: string): void {
@@ -24,20 +22,15 @@ export class CartProductComponent implements OnInit {
       return;
     }
 
-    const index: number = this.products.findIndex(product => product.id === id);
-    if (index !== -1) {
-      this.products.splice(index, 1);
-    }
-
-    this.updateProduct();
+    this.cartService.removeProduct(id);
   }
 
   updateProductQuantity(id: string, quantity: string): void {
-    const index: number = this.products.findIndex(product => product.id === id);
-    if (index !== -1) {
-      this.products[index].quantity = parseInt(quantity, 10);
-    }
+    this.cartService.updateProductQuantity(id, quantity);
+  }
 
-    this.updateProduct();
+  seed(): void {
+    this.cartService.seed();
+    this.products = this.cartService.products;
   }
 }
